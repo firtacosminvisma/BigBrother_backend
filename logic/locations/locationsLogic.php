@@ -42,6 +42,16 @@ class LocationLogic  extends Logic {
         }
     }
 
+    function processGetLastLocation(){
+        if ( $_SERVER["REQUEST_METHOD"] == "GET" ) {
+            return $this->getLastLocation();
+        }else{
+            //send error because the method is not POST
+            http_response_code(400);
+            return $this -> error -> createRequestTypeNOKError(" GET ");
+        }
+    }
+
     private function postLocation() {
         $bodyObj = json_decode(file_get_contents('php://input'));
         $bodyError = $this->checkForParamError($bodyObj);
@@ -58,7 +68,44 @@ class LocationLogic  extends Logic {
         }
     }
 
+    private function getLastLocation() {
+        
+        $managerID = $_GET["managerID"];
+        if ( !isset($managerID) || $managerID == "" ){
+            $errorMsj = "The following parameters are missing: managerID";
+            return $this->error->createRequestParamsNOKError($errorMsj);
+        }else{
+            $result = $this->locationDAO->getLastLocationsForManagerTeam($_GET["managerID"]);
+            $returnObject->response = "OK";
+            $returnObject->users=$result;
+            $ret = json_encode($returnObject);
+            return $ret;
+        }
+            
+            
+    }
+
     private function checkForParamError($json_obj){
+        $paramError = "";
+        if ( empty($json_obj->userID) ) {
+            $paramError .= " 'userID' ";
+        }
+        if ( empty($json_obj->lattitude) ) {
+            $paramError .= " 'lattitude' ";
+        }
+        if ( empty($json_obj->longitude) ) {
+            $paramError .= " 'longitude' ";
+        }
+
+        if ( !empty($paramError) ) {
+            $errorMsj = "The following parameters are missing: ".$paramError;
+            return $this->error->createRequestParamsNOKError($errorMsj);
+        }else{
+            return "";
+        }
+    }
+
+    private function checkForGetLastLocationParamError($json_obj) {
         $paramError = "";
         if ( empty($json_obj->userID) ) {
             $paramError .= " 'userID' ";
