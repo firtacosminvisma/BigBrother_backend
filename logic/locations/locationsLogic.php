@@ -52,6 +52,16 @@ class LocationLogic  extends Logic {
         }
     }
 
+    function processGetAllLocationsForTeam(){
+        if ( $_SERVER["REQUEST_METHOD"] == "GET" ) {
+            return $this->getAllLocationsForTeam();
+        }else{
+            //send error because the method is not POST
+            http_response_code(400);
+            return $this -> error -> createRequestTypeNOKError(" GET ");
+        }
+    }
+
     private function postLocation() {
         $bodyObj = json_decode(file_get_contents('php://input'));
         $bodyError = $this->checkForParamError($bodyObj);
@@ -62,6 +72,24 @@ class LocationLogic  extends Logic {
                 $bodyObj->longitude   
             );
             return '{"response":"OK"}';
+            
+        }else{
+            return $bodyError;
+        }
+    }
+
+    private function getAllLocationsForTeam() {
+        $bodyError = $this->checkForGetAllLocationsParamError();
+        if ( empty($bodyError) ){
+            $result = $this->locationDAO->getAllLocationsForTeam(
+                $_GET["managerID"],
+                $_GET["startTimeStamp"],
+                $_GET["endTimeStamp"]
+            );
+            $returnObject->response = "OK";
+            $returnObject->users=$result;
+            $ret = json_encode($returnObject);
+            return $ret;
             
         }else{
             return $bodyError;
@@ -105,16 +133,16 @@ class LocationLogic  extends Logic {
         }
     }
 
-    private function checkForGetLastLocationParamError($json_obj) {
+    private function checkForGetAllLocationsParamError() {
         $paramError = "";
-        if ( empty($json_obj->userID) ) {
-            $paramError .= " 'userID' ";
+        if ( empty($_GET["managerID"]) ) {
+            $paramError .= " 'managerID' ";
         }
-        if ( empty($json_obj->lattitude) ) {
-            $paramError .= " 'lattitude' ";
+        if ( empty($_GET["startTimeStamp"]) ) {
+            $paramError .= " 'startTimeStamp' ";
         }
-        if ( empty($json_obj->longitude) ) {
-            $paramError .= " 'longitude' ";
+        if ( empty($_GET["endTimeStamp"]) ) {
+            $paramError .= " 'endTimeStamp' ";
         }
 
         if ( !empty($paramError) ) {

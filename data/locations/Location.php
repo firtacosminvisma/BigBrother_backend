@@ -1,6 +1,7 @@
 <?php
 
 class Location implements JsonSerializable{
+    public $userID;
     public $name;
     public $latitude;
     public $longitude;
@@ -12,6 +13,7 @@ class Location implements JsonSerializable{
         return new class implements QueryProcesor {
             public function processRow($row) {
                 $location = new Location();
+                $location->userID = $row["userID"];
                 $location->name = $row["name"];
                 $location->latitude = $row["latitude"];
                 $location->longitude = $row["longitude"];
@@ -26,6 +28,7 @@ class Location implements JsonSerializable{
      */
     public function jsonSerialize() {
         $retVal = [
+            'userID' => htmlentities($this->userID),
             'name' => htmlentities($this->name),
             'latitude' => htmlentities($this->latitude),
             'longitude' => htmlentities($this->longitude),

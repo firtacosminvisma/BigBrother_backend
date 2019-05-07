@@ -36,10 +36,10 @@ class UserDAO extends DAO{
             $sql .= ")";
         }
         $sql .= " VALUES (".
-            "$userid, '$name'";
+            "'$userid', '$name'";
 
         if ( isset($managerID) && $managerID != "") {
-            $sql .= ", $managerID); ";
+            $sql .= ", '$managerID'); ";
         } else {
             $sql .= ");";
         }
