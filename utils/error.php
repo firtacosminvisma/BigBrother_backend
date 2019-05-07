@@ -2,6 +2,17 @@
 
 class ErrorCodes {
     const REQUEST_TYPE_NOK = "100";
+    const REQUEST_PARAMS_NOK = "101";
+    const UNABLE_TO_EXECUTE_ACTION = "102";
+    const TOKEN_EXPIRED_ERROR_CODE = "103";
+    const TOKEN_NOT_IN_DB_ERROR_CODE = "104";
+    const UNKNOWN_ERROR = "104";
+    const TOKEN_CREATE_ERROR_CODE_1 = "111";
+    const TOKEN_CREATE_ERROR_CODE_2 = "112";
+    const TOKEN_REFRESH_ERROR_CODE_0 = "120";
+    const TOKEN_REFRESH_ERROR_CODE_1 = "121";
+    const TOKEN_REFRESH_ERROR_CODE_2 = "122";
+    const TOKEN_REFRESH_ERROR_CODE_3 = "123";
 }
 
 class VVError {
