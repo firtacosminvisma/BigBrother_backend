@@ -1,6 +1,5 @@
 <?php
 require_once( __ROOT__."/data/dao.php");
-require_once("user.php");
 
 class UserDAO extends DAO{
 
@@ -26,10 +25,24 @@ class UserDAO extends DAO{
     }
 
     function saveUserIntoDB($userid, $name, $managerID) {
+        
         $sql = "INSERT INTO ".DB::$DB_TABLE_USERS.
-        " (id, name, managerID) ".
-        " VALUES (".
-        "$userid, '$name', $managerID); ";
+        " (id, name";
+        
+        $userManager = $managerID;
+        if ( isset($managerID) && $managerID != "" ) {
+            $sql .= ", managerID) ";
+        } else {
+            $sql .= ")";
+        }
+        $sql .= " VALUES (".
+            "$userid, '$name'";
+
+        if ( isset($managerID) && $managerID != "") {
+            $sql .= ", $managerID); ";
+        } else {
+            $sql .= ");";
+        }
         // echo $sql;
         $this->db->insert($sql);
     }
